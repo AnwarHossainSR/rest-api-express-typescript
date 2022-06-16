@@ -1,9 +1,19 @@
 import mongoose from "mongoose";
-import { customAlphabet } from "nanoid";
 import { UserDocument } from "./user.model";
 
-const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
-
+//const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
+function create_UUID() {
+  var dt = new Date().getTime();
+  var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (c) {
+      var r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+    }
+  );
+  return uuid;
+}
 export interface ProductInput {
   user: UserDocument["_id"];
   title: string;
@@ -23,7 +33,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      default: () => `product_${nanoid()}`,
+      default: () => create_UUID(),
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     title: { type: String, required: true },
